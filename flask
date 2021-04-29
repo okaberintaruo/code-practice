@@ -1,0 +1,91 @@
+# This is a sample Python script.
+
+# Press Shift+F10 to execute it or replace it with your code.
+# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
+
+from flask import Flask,request
+obj = Flask(__name__)
+dictionary = {1 : ['John', 'Retail'], 2 : ['Doe', 'Retail']}
+#dictionary2 = {'2':['John', 'Retail'], '1':['Doe', 'Retail']}
+l = list()
+
+@obj.route('/employees')
+def display():
+    o = ''''''
+    for i in dictionary:
+        t = dictionary[i]
+        o = o + f'''{i}: {t[0]}: {t[1]}\n'''
+    if dictionary == {}:
+        return "No results found"
+    return o
+@obj.route('/employee/<employeeid>')
+def display2(employeeid):
+    x = int(employeeid)
+    flag = 0
+    #print(x)
+    #print(type(x))
+    for i in dictionary:
+        if i == x:
+            t = dictionary[i]
+            flag = 1
+            k = f"The Employee details are:\nEmployee Name: {t[0]}\t|\tProject Name: {t[1]}"
+            print(k)
+            return k
+    if flag == 0:
+        k = "No results found"
+        print(k)
+        return k
+
+@obj.route('/employee',methods=['POST'])
+def createemp():
+    x = int(request.form['empid'])
+    #print(type(x))
+    l = list()
+    y = request.form['name']
+    l.append(y)
+    z = request.form['section']
+    l.append(z)
+    dictionary[x] = l
+    return dictionary
+
+@obj.route('/employee/<empid>', methods = ['PUT'])
+def updateemp(empid):
+    #t = request.form['empid']
+    t = int(empid)
+    y = request.form['name']
+    z = request.form['section']
+    flag = 0
+    for i in dictionary:
+        if i == int(t):
+            e = dictionary[i]
+            flag = 1
+            if y:
+                e[0] = y
+            if z:
+                e[1] = z
+    if flag == 0:
+        return "No results found"
+    else:
+        return dictionary
+
+@obj.route('/employees/<empid>', methods= ['DELETE'])
+def deleteemp(empid):
+    q = int(empid)
+    flag = 0
+    for i in dictionary:
+        if i == q:
+            del dictionary[i]
+            flag = 1
+            break
+    if flag:
+        return dictionary
+    else:
+        return "No results found"
+
+obj.run(port=5000)
+
+
+
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
